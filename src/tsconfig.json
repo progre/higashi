@@ -1,6 +1,9 @@
 {
     "compilerOptions": {
+        "target": "ES5",
         "module": "umd",
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "declarationFiles": true,
+        "noEmitOnError": true
     }
 }

@@ -5,11 +5,12 @@ import InputRepository from './input/inputrepository';
 import LocalControllerFactory from './input/localcontrollerfactory';
 import Renderer from './renderer';
 
-let numPlayers = 1;
+let numPlayers = 2;
 
 let frames: Frame[] = [];
 let inputRepository = new InputRepository(numPlayers);
-let localControllerFactory: LocalControllerFactory;
+let player1: LocalControllerFactory;
+let player2: LocalControllerFactory;
 let renderer: Renderer;
 
 let game = new Phaser.Game(640, 360, Phaser.AUTO, '', {
@@ -17,7 +18,8 @@ let game = new Phaser.Game(640, 360, Phaser.AUTO, '', {
 	},
 
 	create() {
-		localControllerFactory = new LocalControllerFactory(game.input);
+		player1 = new LocalControllerFactory(game.input, 0);
+		player2 = new LocalControllerFactory(game.input, 1);
 		renderer = new Renderer(game.debug, numPlayers);
 	},
 
@@ -25,7 +27,11 @@ let game = new Phaser.Game(640, 360, Phaser.AUTO, '', {
 		inputRepository.putController(
 			frames.length,
 			0,
-			localControllerFactory.create());
+			player1.create());
+		inputRepository.putController(
+			frames.length,
+			1,
+			player2.create());
 		frames.push(FrameFactory.create(peek(frames), inputRepository.shift()));
 	},
 

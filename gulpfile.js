@@ -2,35 +2,42 @@ var gulp = require('gulp');
 var del = require('del');
 var runSequence = require('run-sequence');
 
-var path = {
-    main: { src: 'src/public/**/*.ts', dest: 'lib/public/' },
-    test: { src: 'src/test/**/*.ts', dest: 'lib/test/' }
-};
-
-require('./gulp/ts')(path.main);
-require('./gulp/test')(path.test);
+require('./gulp/copy')();
 require('./gulp/jade')();
-require('./gulp/stylus')();
 require('./gulp/serve')();
+require('./gulp/stylus')();
+require('./gulp/test')();
+require('./gulp/ts')();
 
-gulp.task('clean:dest', function (callback) {
-    del([path.main.dest, path.test.dest], callback);
+gulp.task('default', ['serve', 'watch']);
+
+gulp.task('serve', ['build'], function (callback) {
+    runSequence('serve:init', callback);
 });
 
-gulp.task('build', function (callback) {
-    runSequence('clean:dest', ['ts', 'jade', 'stylus'], callback);
+gulp.task('build', ['clean'], function (callback) {
+    runSequence('ts', 'jade', 'stylus', 'copy', callback);
 });
 
-gulp.task('build-and-test', function (callback) {
-    runSequence('build', ['test', 'serve:reload'], callback);
+gulp.task('clean', function (callback) {
+    del('lib/', callback);
 });
 
-gulp.task('default', ['serve', 'watch', 'build-and-test']);
+gulp.task('ts', function (callback) {
+    runSequence('ts:build', ['test', 'serve:reload'], callback);
+});
+
+gulp.task('jade', function (callback) {
+    runSequence('jade:build', 'serve:reload', callback);
+});
+
+gulp.task('stylus', function (callback) {
+    runSequence('stylus:build', 'serve:reload', callback);
+});
 
 gulp.task('watch', function () {
-    gulp.watch(path.main.src, ['build-and-test']);
-    gulp.watch(path.test.src, ['test']);
+    gulp.watch(['src/**/*.ts', '!src/test/'], ['ts']);
+    gulp.watch('src/test/**/*.ts', ['test']);
     gulp.watch('src/**/*.jade', ['jade']);
     gulp.watch('src/**/*.stylus', ['stylus']);
-    gulp.watch('lib/public/**/*.jade', ['serve:reload']);
 });
