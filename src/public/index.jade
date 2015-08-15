@@ -9,9 +9,6 @@ link(rel='stylesheet' href='style/style.css')
 body
   | Hello world!
   script(src='https://cdnjs.cloudflare.com/ajax/libs/phaser/2.4.2/phaser.min.js')
-  if debug
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.15/require.js',
-      data-main='script/config')
-  else
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.15/require.min.js',
-      data-main='script/main')
+  script(src='https://cdn.socket.io/socket.io-1.3.5.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js',
+    data-main='script/main')

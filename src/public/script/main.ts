@@ -14,32 +14,32 @@ let player2: LocalControllerFactory;
 let renderer: Renderer;
 
 let game = new Phaser.Game(640, 360, Phaser.AUTO, '', {
-	preload() {
-	},
+    preload() {
+    },
 
-	create() {
-		player1 = new LocalControllerFactory(game.input, 0);
-		player2 = new LocalControllerFactory(game.input, 1);
-		renderer = new Renderer(game.debug, numPlayers);
-	},
+    create() {
+        player1 = new LocalControllerFactory(game.input, 0);
+        player2 = new LocalControllerFactory(game.input, 1);
+        renderer = new Renderer(game.debug, numPlayers);
+    },
 
-	update() {
-		inputRepository.putController(
-			frames.length,
-			0,
-			player1.create());
-		inputRepository.putController(
-			frames.length,
-			1,
-			player2.create());
-		frames.push(FrameFactory.create(peek(frames), inputRepository.shift()));
-	},
+    update() {
+        inputRepository.putController(
+            frames.length,
+            0,
+            player1.create());
+        inputRepository.putController(
+            frames.length,
+            1,
+            player2.create());
+        frames.push(FrameFactory.create(peek(frames), inputRepository.shift()));
+    },
 
-	render() {
-		renderer.render(peek(frames));
-	}
+    render() {
+        renderer.render(peek(frames));
+    }
 });
 
 function peek<T>(array: Array<T>) {
-	return array[array.length - 1];
+    return array[array.length - 1];
 }
