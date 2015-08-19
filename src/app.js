@@ -2,12 +2,13 @@ var http = require('http'),
     socketIO = require('socket.io'),
     koa = require('koa'),
     serve = require('koa-static'),
-    io = require('./io');
+    io = require('./io').default;
 
 var app = koa();
 
 app.use(serve(__dirname + '/public'));
 
-io.default(socketIO(http.Server(app.callback())));
+var server = http.Server(app.callback());
+io(socketIO(server));
 
-app.listen(8080);
+server.listen(8080);

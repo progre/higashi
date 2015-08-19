@@ -1,49 +1,47 @@
+import Network from '../network/starnetwork';
 import Input from './input';
 import Controller from './controller';
-import InputFactory from './inputfactory';
+import LocalControllerFactory from './localcontrollerfactory';
+import RemoteControllerRepository from './remotecontrollerrepository';
 
 export default class InputRepository {
-    /** 現在のフレーム */
-    private index = 0;
-    private inputFactories: InputFactory[] = [];
-    private inputs: Input[] = [];
+    private frame = 0;
+    private localControllerCache: Controller;
+    private remoteControllerPlayers: number[] = [];
 
-    constructor(private numPlayers: number) {
-    }
-
-    putController(frame: number, player: number, controller: Controller) {
-        if (this.inputs[frame] != null) {
-            throw new Error('Frame is already created.');
-        }
-        let inputFactory = getOrCreate(this.numPlayers, this.inputFactories, frame);
-        inputFactory.putController(player, controller);
-        if (inputFactory.filled()) {
-            this.inputs[frame] = inputFactory.create();
-            this.inputFactories[frame] = null;
+    constructor(
+        private numPlayers: number,
+        private localControllerFactory: LocalControllerFactory,
+        private network: Network,
+        private remoteControllerRepository: RemoteControllerRepository
+        ) {
+        for (let i = 0; i < numPlayers; i++) {
+            if (i !== network.localPlayer) {
+                this.remoteControllerPlayers.push(i);
+            }
         }
     }
 
     peek() {
-        return this.inputs[this.index];
+        let controllers: Controller[] = [];
+        controllers[this.network.localPlayer] = this.localController();
+        this.remoteControllerPlayers.forEach(player => {
+            controllers[player] = this.remoteControllerRepository.get(player, this.frame);
+        });
+        return new Input(controllers);
     }
 
-    shift() {
-        let value = this.peek();
-        if (value != null) {
-            this.index++;
+    next() {
+        this.frame++;
+        this.localControllerCache = null;
+    }
+
+    private localController() {
+        if (this.localControllerCache != null) {
+            return this.localControllerCache;
         }
-        return value;
+        this.localControllerCache = this.localControllerFactory.create();
+        this.network.emitController(this.frame, this.localControllerCache);
+        return this.localControllerCache;
     }
-
-    dump() {
-        return this.inputs;
-    }
-}
-
-function getOrCreate(numPlayers: number, inputFactories: InputFactory[], frame: number) {
-    let inputFactory = inputFactories[frame];
-    if (inputFactory != null) {
-        return inputFactory;
-    }
-    return inputFactories[frame] = new InputFactory(numPlayers);
 }

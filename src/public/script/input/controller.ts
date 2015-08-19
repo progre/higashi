@@ -1,4 +1,8 @@
 export default class Controller {
+    static wrap(a: Controller) {
+        return new this(a.up, a.down, a.left, a.right);
+    }
+
     constructor(
         public up: boolean,
         public down: boolean,

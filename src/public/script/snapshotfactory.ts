@@ -1,12 +1,11 @@
-import Frame from './frame';
+import Snapshot from './snapshot';
 import Input from './input/input';
-import InputFactory from './input/inputfactory';
 import Player from './player';
 
-export default class FrameFactory {
-    static create(previous: Frame, input: Input) {
+export default class SnapshotFactory {
+    static create(previous: Snapshot, input: Input) {
         if (previous == null) { // 最初のフレーム
-            previous = initialFrame(input.controllers.length);
+            previous = initialSnapshot(input.controllers.length);
         }
         let players = previous.players.map((p, i) => {
             let ctrler = input.controllers[i];
@@ -26,17 +25,17 @@ export default class FrameFactory {
             }
             return new Player(x, y);
         });
-        return new Frame(previous, input, players);
+        return new Snapshot(previous, input, players);
     }
 }
 
-function initialFrame(numPlayers: number) {
+function initialSnapshot(numPlayers: number) {
     let list: Player[] = [];
     for (let i = 0; i < numPlayers; i++) {
         list.push(new Player(0, 0));
     }
-    return new Frame(
+    return new Snapshot(
         null,
-        InputFactory.emptyInput(numPlayers),
+        Input.empty(numPlayers),
         list);
 }

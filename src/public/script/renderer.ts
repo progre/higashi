@@ -1,4 +1,4 @@
-import Frame from './frame';
+import Snapshot from './snapshot';
 
 export default class Renderer {
     players: Phaser.Circle[] = [];
@@ -9,8 +9,8 @@ export default class Renderer {
         }
     }
 
-    render(frame: Frame) {
-        frame.players.forEach((model, i) => {
+    render(snapshot: Snapshot) {
+        snapshot.players.forEach((model, i) => {
             let view = this.players[i];
             view.x = model.x;
             view.y = model.y;

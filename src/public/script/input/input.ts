@@ -1,6 +1,14 @@
 import Controller from './controller';
 
 export default class Input {
+    static empty(numPlayers: number) {
+        let list: Controller[] = [];
+        for (let i = 0; i < numPlayers; i++) {
+            list.push(new Controller(false, false, false, false));
+        }
+        return new Input(list);
+    }
+
     constructor(
         public controllers: Controller[]) {
     }

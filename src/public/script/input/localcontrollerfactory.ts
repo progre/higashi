@@ -20,6 +20,8 @@ export default class LocalControllerFactory {
                 this.left = this.input.keyboard.addKey(Phaser.Keyboard.F);
                 this.right = this.input.keyboard.addKey(Phaser.Keyboard.H);
                 break;
+            default:
+                break;
         }
     }
 
