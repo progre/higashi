@@ -1,7 +1,14 @@
+import Network from '../network/starnetwork';
 import Controller from './controller';
 
 export default class RemoteControllerRepository {
     controllers: Controller[][] = [];
+
+    constructor(network: Network) {
+        network.on('controller', (obj: { player: number; frame: number; controller: Controller; }) => {
+            this.put(obj.player, obj.frame, obj.controller);
+        });
+    }
 
     put(player: number, frame: number, controller: Controller) {
         getOrCreate(this.controllers, player, [])[frame] = controller;

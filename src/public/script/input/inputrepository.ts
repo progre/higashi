@@ -28,6 +28,9 @@ export default class InputRepository {
         this.remoteControllerPlayers.forEach(player => {
             controllers[player] = this.remoteControllerRepository.get(player, this.frame);
         });
+        if (controllers.some(x => x == null)) {
+            return null;
+        }
         return new Input(controllers);
     }
 

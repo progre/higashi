@@ -16,7 +16,7 @@ export default class Battle {
             numPlayers,
             new LocalControllerFactory(game.input, 0),
             network,
-            new RemoteControllerRepository());
+            new RemoteControllerRepository(network));
         this.renderer = new Renderer(game.debug, numPlayers);
     }
 

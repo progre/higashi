@@ -2,7 +2,7 @@
 import Battle from './battle';
 import Network from './network/starnetwork';
 
-let numPlayers = 1;
+let numPlayers = 2;
 let battle: Battle;
 let isServer = location.search === '?server';
 
