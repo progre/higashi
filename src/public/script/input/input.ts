@@ -4,7 +4,7 @@ export default class Input {
     static empty(numPlayers: number) {
         let list: Controller[] = [];
         for (let i = 0; i < numPlayers; i++) {
-            list.push(new Controller(false, false, false, false));
+            list.push(Controller.empty());
         }
         return new Input(list);
     }

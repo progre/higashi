@@ -1,4 +1,6 @@
-export default class SocketIORemote extends EventEmitter {
+import * as ifes from './interfaces';
+
+export default class SocketIORemote extends EventEmitter implements ifes.Remote {
     static new() {
         return new Promise<SocketIORemote>((resolve, reject) => {
             let socket = io();

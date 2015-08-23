@@ -1,6 +1,6 @@
-import Snapshot from './snapshot';
+import Snapshot from './valueobject/snapshot';
+import Player from './valueobject/player';
 import Input from './input/input';
-import Player from './player';
 
 export default class SnapshotFactory {
     static create(previous: Snapshot, input: Input) {

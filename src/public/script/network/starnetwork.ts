@@ -1,9 +1,9 @@
 import Controller from '../input/controller';
-import Remote from './socketioremote';
+import * as ifes from './interfaces';
 
 export default class StarNetwork extends EventEmitter {
-    static new(isServer: boolean, numPlayers: number) {
-        return Remote.new().then(remote => new Promise<StarNetwork>((resolve, reject) => {
+    static new(remote: ifes.Remote, isServer: boolean, numPlayers: number) {
+        return new Promise<StarNetwork>((resolve, reject) => {
             if (isServer) {
                 // サーバーは'pong'が各クライアントから来れば開始可能
                 // 'hello'が来たら'ping'を撃つ
@@ -31,17 +31,15 @@ export default class StarNetwork extends EventEmitter {
                 });
                 remote.on('hello', () => {
                     console.log('<-hello');
-                    remote.emitAll('ping', {});
+                    remote.emitAll('ping', remote.identifier);
                     console.log('->ping');
                 });
                 remote.emitAll('ping', remote.identifier);
                 console.log('->ping');
             } else {
                 // クライアントはサーバーのIDと自分の番号がわかれば開始可能
-                remote.emitAll('hello', {});
-                console.log('->hello');
                 remote.on('ping', (id: string) => {
-                    console.log('<-ping');
+                    console.log('<-ping' + id);
                     remote.emitTo(id, 'pong', remote.identifier);
                     console.log('->pong');
                 });
@@ -50,12 +48,14 @@ export default class StarNetwork extends EventEmitter {
                     remote.removeAllListeners('ping');
                     resolve(new StarNetwork(remote, obj.id, obj.player));
                 });
+                remote.emitAll('hello', {});
+                console.log('->hello');
             }
-        }));
+        });
     }
 
     constructor(
-        private remote: Remote,
+        private remote: ifes.Remote,
         private serverIdentifier: string,
         public localPlayer: number
         ) {

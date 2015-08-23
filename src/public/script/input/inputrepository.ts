@@ -6,19 +6,23 @@ import RemoteControllerRepository from './remotecontrollerrepository';
 
 export default class InputRepository {
     private frame = 0;
-    private localControllerCache: Controller;
+    private localControllerCache: Controller[] = [];
     private remoteControllerPlayers: number[] = [];
 
     constructor(
         private numPlayers: number,
         private localControllerFactory: LocalControllerFactory,
         private network: Network,
-        private remoteControllerRepository: RemoteControllerRepository
+        private remoteControllerRepository: RemoteControllerRepository,
+        private delay: number
         ) {
         for (let i = 0; i < numPlayers; i++) {
             if (i !== network.localPlayer) {
                 this.remoteControllerPlayers.push(i);
             }
+        }
+        for (let i = 0; i < delay; i++) {
+            this.localControllerCache.push(Controller.empty());
         }
     }
 
@@ -36,15 +40,15 @@ export default class InputRepository {
 
     next() {
         this.frame++;
-        this.localControllerCache = null;
+        this.localControllerCache.shift();
     }
 
     private localController() {
-        if (this.localControllerCache != null) {
-            return this.localControllerCache;
+        if (this.localControllerCache.length > this.delay) {
+            return this.localControllerCache[0];
         }
-        this.localControllerCache = this.localControllerFactory.create();
-        this.network.emitController(this.frame, this.localControllerCache);
-        return this.localControllerCache;
+        this.localControllerCache.push(this.localControllerFactory.create());
+        this.network.emitController(this.frame, this.localControllerCache[this.localControllerCache.length - 1]);
+        return this.localControllerCache[0];
     }
 }

@@ -1,4 +1,4 @@
-import Snapshot from './snapshot';
+import Snapshot from './valueobject/snapshot';
 import SnapshotFactory from './snapshotfactory';
 import InputRepository from './input/inputrepository';
 import LocalControllerFactory from './input/localcontrollerfactory';
@@ -16,7 +16,8 @@ export default class Battle {
             numPlayers,
             new LocalControllerFactory(game.input, 0),
             network,
-            new RemoteControllerRepository(network));
+            new RemoteControllerRepository(network),
+            10);
         this.renderer = new Renderer(game.debug, numPlayers);
     }
 

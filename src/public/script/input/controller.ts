@@ -3,6 +3,10 @@ export default class Controller {
         return new this(a.up, a.down, a.left, a.right);
     }
 
+    static empty() {
+        return new this(false, false, false, false);
+    }
+
     constructor(
         public up: boolean,
         public down: boolean,

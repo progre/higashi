@@ -1,4 +1,4 @@
-import Snapshot from './snapshot';
+import Snapshot from './valueobject/snapshot';
 
 export default class Renderer {
     players: Phaser.Circle[] = [];
